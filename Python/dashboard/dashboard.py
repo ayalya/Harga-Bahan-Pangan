@@ -250,7 +250,7 @@ def pilih_jmlh_cluster():
     with col2:
         m = st.number_input("Fuzziness (m)", value=1.5, format="%.1f")
     with col3:
-        error = st.number_input("Error", value=0.001, format="%.3f")
+        error = st.number_input("Error (ε)", value=0.001, format="%.3f")
     with col4:
         maxiter = st.number_input("Maks Iterasi", value=100)
 
