@@ -245,7 +245,7 @@ def pilih_jmlh_cluster():
     with col1:
         jmlh_cluster = [2, 3, 4, 5]
         c = st.selectbox(
-            "Jmlh Klaster (c)", list(jmlh_cluster), index=list(jmlh_cluster).index(3)
+            "Jml Klaster (c)", list(jmlh_cluster), index=list(jmlh_cluster).index(3)
         )
     with col2:
         m = st.number_input("Fuzziness (m)", value=1.5, format="%.1f")
