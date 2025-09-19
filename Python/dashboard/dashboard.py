@@ -314,7 +314,6 @@ def visualisasi_hasil_cluster(
 
         # Layout styling
         fig.update_layout(
-            plot_bgcolor="white",
             height=250,
             margin=dict(t=25, b=20, l=10, r=10),
             title=dict(x=0.5, xanchor="center"),
