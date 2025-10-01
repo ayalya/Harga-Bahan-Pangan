@@ -38,6 +38,16 @@ padding-bottom: 1rem;}
     [data-testid="stMetricLabel"] {
         font-size: 20px;   /* ubah label metric */
     }
+.footer{
+position: relative;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #FAEBD7;
+        text-align: center;
+        padding: 10px;
+        font-size: 14px;
+    }
 </style>
 """,
     unsafe_allow_html=True,
@@ -119,7 +129,7 @@ def diagram_garis_bapok(df):
     if on:  # opsi=='Normalisasi':
         df = data_norm
         y_label = "Nilai (Scale)"
-        y="Nilai"
+        y = "Nilai"
         data_log = df.melt(
             id_vars=["Minggu ke"], value_vars=pangan, var_name="Komoditas", value_name=y
         )
@@ -143,9 +153,12 @@ def diagram_garis_bapok(df):
 
     fig.update_yaxes(type="linear")
 
-    fig.update_layout(margin=dict(t=25, b=20, l=10, r=10), height=400, 
-                      xaxis_title="Minggu ke",
-                      yaxis_title=y_label,)
+    fig.update_layout(
+        margin=dict(t=25, b=20, l=10, r=10),
+        height=400,
+        xaxis_title="Minggu ke",
+        yaxis_title=y_label,
+    )
     st.plotly_chart(fig)
 
 
@@ -250,11 +263,11 @@ def pilih_jmlh_cluster():
     with col2:
         m = st.number_input("Fuzziness (m)", value=1.5, format="%.1f")
     with col3:
-        error = st.number_input("Error (ε)", value=0.001, format="%.3f")
+        error = st.number_input("Error (ε)", value=0.0001, format="%.3f")
     with col4:
         maxiter = st.number_input("Maks Iterasi", value=100)
 
-    if c == 3 and m == 1.5 and error == 0.001 and maxiter == 100:
+    if c == 3 and m == 1.5 and error == 0.0001 and maxiter == 100:
         st.write("*parameter terbaik untuk model")
 
     # Normalisasi Data
@@ -281,8 +294,21 @@ def visualisasi_hasil_cluster(
     df_cluster: DataFrame dengan hasil defuzzifikasi dan komoditas
     Output:
     Visualisasi diagram garis hasil masing-masing cluaster
+    Note: tambahkan data asli hasil normalisasi
     """
+
     clusters = sorted(df_cluster[cluster_col].unique())
+
+    on = st.toggle("Lihat Hasil Pakai Data Normal")
+    
+    if on: # Pakai opsi normal
+        df_data = data
+        y="Harga (Rp)"
+    else:
+        df_data = df_data
+        # value_name="Nilai (Skala)"
+        y="Nilai (Skala)"
+
 
     for cl in clusters:
         # Ambil nama bahan pangan dalam cluster
@@ -300,14 +326,14 @@ def visualisasi_hasil_cluster(
             id_vars=[datetime_col],
             value_vars=col_in_df,
             var_name="Komoditas",
-            value_name="Nilai (Skala)",
+            value_name=y,
         )
 
         # Buat line chart untuk cluster ini
         fig = px.line(
             data_long,
             x=datetime_col,
-            y="Nilai (Skala)",
+            y=y,
             color="Komoditas",
             title=f"Cluster {cl}",
         )
@@ -360,3 +386,8 @@ with colhead1:
 alignment_and_counting_dtw()
 
 diagram_garis_bapok(data)
+
+
+st.markdown("")
+st.markdown('<div class="footer">Dikembangkan oleh Alya Fauzia | 2025 Penelitian Skripsi</div>', unsafe_allow_html=True)
+st.markdown('<div class="footer">Kode dapat diakses <a href="https://github.com/ayalya/Harga-Bahan-Pangan/tree/main">di sini</a></div>', unsafe_allow_html=True)
