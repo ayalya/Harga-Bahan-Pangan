@@ -43,10 +43,9 @@ position: relative;
         left: 0;
         bottom: 0;
         width: 100%;
-        background-color: #FAEBD7;
         text-align: center;
         padding: 10px;
-        font-size: 14px;
+        font-size: 16px;
     }
 </style>
 """,
