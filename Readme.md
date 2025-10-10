@@ -6,7 +6,7 @@ Judul: Pengelompokan Data _Time-Series_ Harga Bahan Pangan Provinsi Banten mengg
 ### Abstract
 Kondisi ketahanan pangan di Provinsi Banten yang kian menurun dan menyebabkan lonjakan harga bahan pangan dari waktu ke waktu. Pada tahun 2023, laju pengeluaran untuk kategori makanan di Provinsi Banten menjadi paling tinggi ke dua di Indonesia setelah Provinsi Bangka Belitung. Padahal, Provinsi Banten termasuk daerah sentra beras nasional menurut Kementrian Pertahanan. Oleh karena itu, penelitian ini bertujuan untuk mengeksplorasi dan memahami pola pergerakan harga pangan dengan memanfaatkan data time-series melalui algoritma Fuzzy C-Means Clustering dan memanfaatkan kesamaan Dynamic Time Warping untuk pengukuran jarak. Jumlah klaster optimal adalah 3 klaster dengan evaluasi validasi yang didapatkan MPC sebesar 0,957755, PEI adalah 0,0321, dan nilai XBI adalah 0,090437. Hasil pengelompokan mampu memberikan gambaran kondisi harga bahan pangan di Provinsi Banten.
 
-<img src="https://raw.githubusercontent.com/ayalya/analisis-sentimen-sbms/main/asset/alur_penelitian(skripsi).jpg" align="center"><a></a>
+<img src="https://raw.githubusercontent.com/ayalya/analisis-sentimen-sbms/main/alur_penelitian(skripsi).jpg" align="center"><a></a>
 
 Gambar 1. Alur Penelitian
 
@@ -54,7 +54,7 @@ Jumlah Klaster |    MPC     |   PEI     |   XBI
 5   |   0.957192    |   0.084499    |   0.206767
 
 
-<img src="https://raw.githubusercontent.com/ayalya/analisis-sentimen-sbms/main/asset/nilaiMetrikEvaluasi.png" align="center"><a></a>
+<img src="https://raw.githubusercontent.com/ayalya/analisis-sentimen-sbms/main/nilaiMetrikEvaluasi.png" align="center"><a></a>
 
 Gambar 2. Diagram Garis Metrik Evaluasi
 
@@ -62,7 +62,7 @@ Jumlah klaster 2 akan dikecualikan karena nilai MPC mendekati 1, berpotensi meni
 
 ## Hasil
 
-<img src="https://raw.githubusercontent.com/ayalya/analisis-sentimen-sbms/main/asset/diagramGarisAnggotaKlaster.png" align="center"><a></a>
+<img src="https://raw.githubusercontent.com/ayalya/analisis-sentimen-sbms/main/diagramGarisAnggotaKlaster.png" align="center"><a></a>
 
 Gambar 3. Diagram Garis Anggota Klaster Pemodelan FCM
 
@@ -113,7 +113,7 @@ streamlit run dashboard\dashboard.py
 
 ### Link dashboard streamlit yang sudah dideploy
 
-<img src="https://raw.githubusercontent.com/ayalya/analisis-sentimen-sbms/main/asset/dashboardFCM.png" align="center"><a></a>
+<img src="https://raw.githubusercontent.com/ayalya/analisis-sentimen-sbms/main/dashboardFCM.png" align="center"><a></a>
 
 diakses [di sini](https://dashboardhargapanganprovbanten.streamlit.app/)
 
