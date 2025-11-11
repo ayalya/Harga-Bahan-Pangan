@@ -262,7 +262,7 @@ def pilih_jmlh_cluster():
     with col2:
         m = st.number_input("Fuzziness (m)", value=1.5, format="%.1f")
     with col3:
-        error = st.number_input("Error (ε)", value=0.0001, format="%.3f")
+        error = st.number_input("Ambang (ε)", value=0.0001, format="%.4f")
     with col4:
         maxiter = st.number_input("Maks Iterasi", value=100)
 
@@ -299,15 +299,14 @@ def visualisasi_hasil_cluster(
     clusters = sorted(df_cluster[cluster_col].unique())
 
     on = st.toggle("Lihat Hasil Pakai Data Normal")
-    
-    if on: # Pakai opsi normal
+
+    if on:  # Pakai opsi normal
         df_data = data
-        y="Harga (Rp)"
+        y = "Harga (Rp)"
     else:
         df_data = df_data
         # value_name="Nilai (Skala)"
-        y="Nilai (Skala)"
-
+        y = "Nilai (Skala)"
 
     for cl in clusters:
         # Ambil nama bahan pangan dalam cluster
@@ -388,5 +387,11 @@ diagram_garis_bapok(data)
 
 
 st.markdown("")
-st.markdown('<div class="footer">Dikembangkan oleh Alya Fauzia | 2025 Penelitian Skripsi</div>', unsafe_allow_html=True)
-st.markdown('<div class="footer">Kode dapat diakses <a href="https://github.com/ayalya/Harga-Bahan-Pangan/tree/main">di sini</a></div>', unsafe_allow_html=True)
+st.markdown(
+    '<div class="footer">Dikembangkan oleh Alya Fauzia | 2025 Penelitian Skripsi</div>',
+    unsafe_allow_html=True,
+)
+st.markdown(
+    '<div class="footer">Kode dapat diakses <a href="https://github.com/ayalya/Harga-Bahan-Pangan/tree/main">di sini</a></div>',
+    unsafe_allow_html=True,
+)

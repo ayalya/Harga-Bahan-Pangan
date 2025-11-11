@@ -371,8 +371,8 @@ data_for_fcm = transpose_time_series_data(data_scaled)
 df_evaluasi_cluster, df_derajat_keanggotaan = fcm_model(
     data_for_fcm, c=3, m=1.5, error=0.0001, maxiter=100
 )
-print("Model Selesai")
-print("Evaluasi klaster:")
-print(df_evaluasi_cluster)
-print("\nDerajat Keanggotaan dan Defuzzifikasi")
-print(df_derajat_keanggotaan)
+# print("Model Selesai")
+# print("Evaluasi klaster:")
+# print(df_evaluasi_cluster)
+# print("\nDerajat Keanggotaan dan Defuzzifikasi")
+# print(df_derajat_keanggotaan)
