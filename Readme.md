@@ -18,22 +18,16 @@ Proses pemodelan menggunakan algoritma _Fuzzy C-Means Clustering_ menggunakan pa
 Evaluasi matriks yang digunakan pada penelitian ini menggunakan evaluasi internal dari Fuzzy C-Means Clustering, yaitu:
 
 1. **Modified Partition Coefficient (MPC)**, merupakan evaluasi matriks lanjutan dan normalisasi dari PC untuk menghilangkan ketergantungan terhadap nilai c sehingga nilainya berada diantara 0-1. Semakin dekat nilainya maka semakin jelas data terkelompokan. Adapun rumusnya, sebagai berikut:
+    
+    ![MPC](https://latex.codecogs.com/png.image?\dpi{150}&space;MPC={{1}-\frac{c}{c-1}(1-PC)})
 
-<div align="center">
-    <img src="https://latex.codecogs.com/png.image?\dpi{150}&space;MPC={1}- \frac{c}{c-1}(1-PC)" alt="PC">
-</div>
+2. **Partition Entropy Index (PEI)**, merupakan evaluasi matriks untuk mengukur ketidakpastian (entropy) partisi pada model. Semakin mendekati 0 nilainya, maka semakin baik cluster yang dihasilkan. Perhitungannya dilakukan menggunakan rumus:
 
-2. **Partition Entropy Index (PE)**, merupakan evaluasi matriks untuk mengukur ketidakpastian (entropy) partisi pada model. Semakin mendekati 0 nilainya, maka semakin baik cluster yang dihasilkan. Perhitungannya dilakukan menggunakan rumus:
-
-<div align="center">
-    <img src="https://latex.codecogs.com/png.image?\dpi{150}&space;PEI=-\frac{1}{n} \sum_{i=1}^{n} \sum_{j=1}^{c} {u}_{i,k} log(u_{i,j})" alt="PEI">
-</div>
+    ![PEI](https://latex.codecogs.com/png.image?\dpi{150}&space;PEI={-\frac{1}{n}\sum_{i=1}^{n}\sum_{j=1}^{c}{u}_{i,k}log(u_{i,j})})
 
 3. **Xie Beni Index (XBI)**, digunakan untuk menghitung rasio total variasi antara kekompakan (dalam klaster) dan separasi atau pemisahan (antar klaster). Semakin kecil nilai, semakin baik klaster yang dihasilkan.
 
-<div align="center">
-    <img src="https://latex.codecogs.com/png.image?\dpi{150}&space;XBI=\frac{\sum_{i=1}^{n} \sum_{j=1}^{c} {u}_{i,k}^{m} {||{x}_{i}-{v}_{k}||}^{2}}{{N} . {min}_{k\not= i}{||{x}_{i}-{v}_{k}||}^{2}} \" alt="PEI">
-</div>
+    ![XBI](https://latex.codecogs.com/png.image?\dpi{120}&space;\text{XBI}={\frac{\sum_{i=1}^{n}\sum_{j=1}^{c}{u}_{i,k}^{m}{||{x}_{i}-{v}_{k}||}^{2}}{{N}.{min}_{k\not=i}{||{x}_{i}-{v}_{k}||}^{2}}})
 
 di mana
 
