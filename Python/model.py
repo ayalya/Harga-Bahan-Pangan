@@ -356,21 +356,22 @@ def fcm_model(
 
 
 # ==================== IMPLEMENTASI METHOD ==========
-data = load_data()
+print("Model has been complete")
+# data = load_data()
 
 # Mengubah ke data mingguan
-data_mingguan = day_to_week(data)
+# data_mingguan = day_to_week(data)
 
 # Normalisasi data
-data_scaled = z_normalization(data_mingguan)
+# data_scaled = z_normalization(data_mingguan)
 
 # Transpose data
-data_for_fcm = transpose_time_series_data(data_scaled)
+# data_for_fcm = transpose_time_series_data(data_scaled)
 
 # Implementasi model
-df_evaluasi_cluster, df_derajat_keanggotaan = fcm_model(
-    data_for_fcm, c=3, m=1.5, error=0.0001, maxiter=100
-)
+# df_evaluasi_cluster, df_derajat_keanggotaan = fcm_model(
+#     data_for_fcm, c=3, m=1.5, error=0.0001, maxiter=100
+# )
 # print("Model Selesai")
 # print("Evaluasi klaster:")
 # print(df_evaluasi_cluster)

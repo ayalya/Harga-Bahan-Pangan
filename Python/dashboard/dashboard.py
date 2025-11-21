@@ -1,7 +1,7 @@
 import sys, os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from model import transpose_time_series_data, fcm_model, day_to_week
+from model import transpose_time_series_data, fcm_model, day_to_week, z_normalization
 import streamlit as st
 import plotly.graph_objects as go
 import plotly.express as px
@@ -9,6 +9,7 @@ from plotly.subplots import make_subplots
 import dash
 import pandas as pd
 import math
+import datetime
 from dtaidistance import dtw
 
 app = dash.Dash(__name__)
@@ -90,7 +91,7 @@ def load_data():
         }
     )
     data["Tanggal"] = pd.to_datetime(data["Tanggal"], format="%d/%m/%Y")
-    data = day_to_week(data)
+    # data = day_to_week(data)
     return data
 
 
@@ -126,6 +127,7 @@ def diagram_garis_bapok(df):
 
     # Reshape data
     if on:  # opsi=='Normalisasi':
+        st.write("Data yang ditampilkan adalah data normalisasi")
         df = data_norm
         y_label = "Nilai (Scale)"
         y = "Nilai"
@@ -134,8 +136,8 @@ def diagram_garis_bapok(df):
         )
         # fig = px.line(data_log, x="Minggu ke", y=y, color='Komoditas')
     else:
-        st.write("Harga asli")
-        df = data
+        st.write("Data yang ditampilkan adalah harga asli")
+        df = day_to_week(data)
         y_label = "Harga (Rp)"
         y = "Harga"
         data_log = df.melt(
@@ -242,23 +244,71 @@ def alignment_and_counting_dtw():
 
 # ===================   MODEL FCM   ======================
 
-
 def pilih_jmlh_cluster():
     """
     Memilih parameter dan melatih model
     Output:
-    df_evaluasi_cluster: DataFrame berisi metrik evaluasi klaster (MPC, PE, dan XB)
-    df_derajat_keanggotaan: DataFrame berisi derajat keanggotaan dan anggota klaster
+    df_evaluasi_cluster: DataFrame metrik evaluasi klaster
+    df_derajat_keanggotaan: DataFrame derajat keanggotaan
+    df_filtered: data yang sudah difilter tanggal
+    df_filter_norm: data ter-normalisasi (transpose) untuk visualisasi
     """
+
+    st.markdown(
+        '<h6 class="sub-subheading">Filter Harga Komoditas</h6>', unsafe_allow_html=True
+    )
+
+    col_1, col_2 = st.columns(2)
+    # Filter tanggal
+    min_date = datetime.date(2020, 1, 1)
+    max_date = datetime.date(2024, 12, 31)
+
+    default_start = datetime.date(2020, 1, 1)
+    default_end = datetime.date(2024, 12, 31)
+
+    with col_1:
+        d = st.date_input(
+            "Pilih tanggal",
+            (default_start, default_end),
+            min_date,
+            max_date,
+            format="DD.MM.YYYY"
+        )
+    with col_2:
+        viz_clust = st.selectbox(
+            "Data yang ditampilkan:",
+            ("Data Normalisasi", "Data Asli"),
+            index = 0
+        )
+    st.write("*Data tersedia dari tanggal 1 Januari 2020 - 31 Desember 2024*")
+
+    # Memastikan input adalah tuple rentang tanggal
+    if not(isinstance(d, tuple) and len(d)==2):
+        st.error('Silahkan pilih rentang tanggal (dua tanggal)')
+        st.stop()
+
+    start_date, end_date = d
+
+    range_days = (end_date - start_date).days
+
+    if range_days < 21:
+        st.error("Rentang tanggal harus lebih dari 3 minggu (21 hari)")
+        st.stop()
+
+    # Pastikan 'data' sudah ada di global
+    df_filtered = data.loc[
+        (data["Tanggal"] >= pd.to_datetime(start_date)) &
+        (data["Tanggal"] <= pd.to_datetime(end_date))
+    ]
+
     st.markdown(
         '<h6 class="sub-subheading">Parameter Klaster</h6>', unsafe_allow_html=True
     )
+
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         jmlh_cluster = [2, 3, 4, 5]
-        c = st.selectbox(
-            "Jml Klaster (c)", list(jmlh_cluster), index=list(jmlh_cluster).index(3)
-        )
+        c = st.selectbox("Jml Klaster (c)", jmlh_cluster, index=1)
     with col2:
         m = st.number_input("Fuzziness (m)", value=1.5, format="%.1f")
     with col3:
@@ -267,21 +317,26 @@ def pilih_jmlh_cluster():
         maxiter = st.number_input("Maks Iterasi", value=100)
 
     if c == 3 and m == 1.5 and error == 0.0001 and maxiter == 100:
-        st.write("*parameter terbaik untuk model")
+        st.write("*parameter terbaik untuk model*")
 
-    # Normalisasi Data
+    # Transpose untuk FCM
     data_for_fcm = transpose_time_series_data(data_norm)
 
-    # Melatih model FCM
+    # Melatih model
     df_evaluasi_cluster, df_derajat_keanggotaan = fcm_model(
-        data_for_fcm, c=c, m=m, error=error, maxiter=maxiter
+        data_for_fcm,
+        c=c,
+        m=m,
+        error=error,
+        maxiter=maxiter
     )
-    return df_evaluasi_cluster, df_derajat_keanggotaan
 
+    return df_evaluasi_cluster, df_derajat_keanggotaan, df_filtered, viz_clust
 
 def visualisasi_hasil_cluster(
     df_data,
     df_cluster,
+    options,
     datetime_col="Minggu ke",
     nama_bahan_col="Bahan Pangan",
     cluster_col="Anggota Cluster",
@@ -289,8 +344,9 @@ def visualisasi_hasil_cluster(
     """
     Visualisasi dari hasil setiap klaster
     Parameter
-    df_date: DataFrame yang digunakan untuk visualisasi
+    df_data: DataFrame yang digunakan untuk visualisasi (data filter)
     df_cluster: DataFrame dengan hasil defuzzifikasi dan komoditas
+    options : Pilihan DataFrame akan ditampilkan dalam bentuk normalisasi atau data asli
     Output:
     Visualisasi diagram garis hasil masing-masing cluaster
     Note: tambahkan data asli hasil normalisasi
@@ -298,13 +354,16 @@ def visualisasi_hasil_cluster(
 
     clusters = sorted(df_cluster[cluster_col].unique())
 
-    on = st.toggle("Lihat Hasil Pakai Data Normal")
+    # Mengubah ke bentuk mingguan
+    df_filtered_week = day_to_week(df_data)
+    # Normalisasi
+    df_filtered_norm = z_normalization(df_filtered_week)
 
-    if on:  # Pakai opsi normal
-        df_data = data
+    if options == "Data Asli":  # Pakai opsi normal
+        df_data = df_filtered_week
         y = "Harga (Rp)"
     else:
-        df_data = df_data
+        df_data = df_filtered_norm
         # value_name="Nilai (Skala)"
         y = "Nilai (Skala)"
 
@@ -348,7 +407,6 @@ def visualisasi_hasil_cluster(
 
         st.plotly_chart(fig, use_container_width=True)
 
-
 # =================== TAMPILAN ASLI   ======================
 
 st.markdown(
@@ -360,7 +418,7 @@ st.markdown(
 # Menampilkan Fuzzy C-Means
 colhead1, colhead2 = st.columns([2.5, 1.5])
 with colhead2:
-    df_evaluasi, df_derajat_keanggotaan = pilih_jmlh_cluster()
+    df_evaluasi, df_derajat_keanggotaan, df_filtered, viz_clust_options = pilih_jmlh_cluster()
 
     st.markdown('<p class="sub-subheading"> </p>', unsafe_allow_html=True)
     metric1, metric2, metric3 = st.columns(3)
@@ -378,7 +436,7 @@ with colhead2:
     st.dataframe(df_derajat_keanggotaan)
 
 with colhead1:
-    visualisasi_hasil_cluster(data_norm, df_derajat_keanggotaan)
+    visualisasi_hasil_cluster(df_filtered, df_derajat_keanggotaan, viz_clust_options)
 
 # Menghitung jarak pada DTW
 alignment_and_counting_dtw()
